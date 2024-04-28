@@ -111,15 +111,15 @@ for U in U_values:
         # Create an array to store the x values
         x_values = np.zeros_like(tpoints)
         t = np.arange(0, t_max+dt, dt)      
-        rho00 = np.zeros_like(tpoints, dtype=float)
-        rho11 = np.zeros_like(tpoints, dtype=float) # Qubit 3
-        rho22 = np.zeros_like(tpoints, dtype=float) # Qubit 2
-        rho33 = np.zeros_like(tpoints, dtype=float)
-        rho44 = np.zeros_like(tpoints, dtype=float) # Qubit 1 |100⟩
-        rho55 = np.zeros_like(tpoints, dtype=float)
-        rho55 = np.zeros_like(tpoints, dtype=float)
-        rho66 = np.zeros_like(tpoints, dtype=float)
-        rho77 = np.zeros_like(tpoints, dtype=float)
+        rho00 = np.zeros_like(tpoints, dtype=complex)
+        rho11 = np.zeros_like(tpoints, dtype=complex) # Qubit 3
+        rho22 = np.zeros_like(tpoints, dtype=complex) # Qubit 2
+        rho33 = np.zeros_like(tpoints, dtype=complex)
+        rho44 = np.zeros_like(tpoints, dtype=complex) # Qubit 1 |100⟩
+        rho55 = np.zeros_like(tpoints, dtype=complex)
+        rho55 = np.zeros_like(tpoints, dtype=complex)
+        rho66 = np.zeros_like(tpoints, dtype=complex)
+        rho77 = np.zeros_like(tpoints, dtype=complex)
 
 
         for i in range(1, len(t)):
