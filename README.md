@@ -1,7 +1,9 @@
 # Quantum spin chain info
 This is a simplified version of the code for 3 qubits
+
 with # The computational basis: |000⟩, |001⟩, |010⟩, |011⟩, |100⟩, |101⟩, |110⟩, |111⟩.
-No Temperature, no entanglement, no facilitation:
+
+In this file no temperature, no entanglement, no facilitation
 
 Paramaters can be changed
 
