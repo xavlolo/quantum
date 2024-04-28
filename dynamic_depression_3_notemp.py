@@ -20,7 +20,7 @@ tpoints = np.arange(0, t_max + dt, dt)
 U_values = np.array([0.5])  # Different U values to test.
 # Define the diagonal values for the Hamiltonian 
 diagonal_sets = [
-  [-3, -1,-1, 1, -1, 1, 1, 3],# case homogenous (computed manually)
+  [-3, -1,-1, 1, -1, 1, 1, 3],# case homogenous energy (computed manually)
 ]
 
 results = {} # Initialize an empty dictionary to store results from simulation
@@ -31,15 +31,14 @@ results = {} # Initialize an empty dictionary to store results from simulation
 
 ########## initialization of rho: excitaion first qubit on rho_44 |100⟩#######
 for U in U_values:
-    for diagonal_values in diagonal_sets:
-        rho0 = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 1, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0]], dtype=float)
+    rho0 = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 1, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0]], dtype=float)
         
 ################# evolution of rho ###################### 
 
@@ -87,14 +86,14 @@ for U in U_values:
 #######################  define Hamiltonian #########
     def H_func(r):
         return np.array([
-            [diagonal_values[0], 0, 0, 0, 0, 0, 0, 0],
-            [0, diagonal_values[1], 0.05*r, 0, 0, 0, 0, 0],
-            [0, 0.05*r, diagonal_values[2], 0, 0.05*r, 0, 0, 0],
-            [0, 0, 0, diagonal_values[3], 0, 0, 0, 0],
-            [0, 0, 0.05*r, 0, diagonal_values[4], 0, 0, 0],
-            [0, 0, 0, 0, 0, diagonal_values[5], 0, 0],
-            [0, 0, 0, 0, 0, 0, diagonal_values[6], 0],
-            [0, 0, 0, 0, 0, 0, 0, diagonal_values[7]]], dtype=float)
+            [-3, 0, 0, 0, 0, 0, 0, 0],
+            [0, -1, 0.05*r, 0, 0, 0, 0, 0],
+            [0, 0.05*r, -1, 0, 0.05*r, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0, 0],
+            [0, 0, 0.05*r, 0, -1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 3]], dtype=float)
 
     
 ################## Iterate over the time range, updating the density matrix and calculating its elements at each step
@@ -112,14 +111,14 @@ for U in U_values:
         x_values = np.zeros_like(tpoints)
         t = np.arange(0, t_max+dt, dt)      
         rho00 = np.zeros_like(tpoints, dtype=complex)
-        rho11 = np.zeros_like(tpoints, dtype=complex) # Qubit 3
-        rho22 = np.zeros_like(tpoints, dtype=complex) # Qubit 2
-        rho33 = np.zeros_like(tpoints, dtype=complex)
-        rho44 = np.zeros_like(tpoints, dtype=complex) # Qubit 1 |100⟩
-        rho55 = np.zeros_like(tpoints, dtype=complex)
-        rho55 = np.zeros_like(tpoints, dtype=complex)
-        rho66 = np.zeros_like(tpoints, dtype=complex)
-        rho77 = np.zeros_like(tpoints, dtype=complex)
+        rho11 = np.zeros_like(tpoints, dtype=float) # Qubit 3
+        rho22 = np.zeros_like(tpoints, dtype=float) # Qubit 2
+        rho33 = np.zeros_like(tpoints, dtype=float)
+        rho44 = np.zeros_like(tpoints, dtype=float) # Qubit 1 |100⟩
+        rho55 = np.zeros_like(tpoints, dtype=float)
+        rho55 = np.zeros_like(tpoints, dtype=float)
+        rho66 = np.zeros_like(tpoints, dtype=float)
+        rho77 = np.zeros_like(tpoints, dtype=float)
 
 
         for i in range(1, len(t)):
@@ -231,8 +230,3 @@ plt.show()
 # df.to_csv(txt_file_path, sep='\t', index=False)
 
 # print(f'Data exported successfully to {txt_file_path}')
-
-
-
-
-
