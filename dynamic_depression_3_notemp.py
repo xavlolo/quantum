@@ -1,52 +1,43 @@
 #-----------------------------------------------------------------#
-#------------------------Imports----------------------------------#
+#------------------------Imports-------------------------------#
 #-----------------------------------------------------------------#
 
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-#import pandas as pd
+import pandas as pd
 
 #-----------------------------------------------------------------#
-#------------------------Parameters-------------------------------#
+#------------------------Parameters----------------------------------#
 #-----------------------------------------------------------------#
 
 # The computational basis: |000⟩, |001⟩, |010⟩, |011⟩, |100⟩, |101⟩, |110⟩, |111⟩.
 r0 = 0 #initial r value 
-tau = 10 # synaptic depression
-dt = 0.1 # "dt" is the time step used for numerical integration
-t_max = 700 #max time simulation
-tpoints = np.arange(0, t_max + dt, dt)
-U_values = np.array([0.5])  # Different U values to test.
+tau = 1 # synaptic depression
+dt = 0.01 # "dt" is the time step used for numerical integration
+t_max = 220 #max time simulation
+U_values = [0.1,0.5]  # Different U values to test.
 # Define the diagonal values for the Hamiltonian 
 diagonal_sets = [
-  [-3, -1,-1, 1, -1, 1, 1, 3],# case homogenous energy (computed manually)
+  [-3, -1,-1, 1, -1, 1, 1, 3],# case homogenous (computed manually)
 ]
+
 
 results = {} # Initialize an empty dictionary to store results from simulation
 
-########## initialization of rho: excitaion first qubit on rho_44 |100⟩#######
-
-rho0 = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 1, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0]], dtype=float)
-
 #-----------------------------------------------------------------#
-#------------------------Functions--------------------------------#
+#------------------------Functions----------------------------------#
 #-----------------------------------------------------------------#
 
-for U in U_values:
+     
 ################# evolution of rho ###################### 
-    def rho_derivative(H, rho):
-        return -1j * np.dot(H, rho) + 1j * np.dot(rho, H)
+
+def rho_derivative(H, rho):
+    return -1j * np.dot(H, rho) + 1j * np.dot(rho, H)
     
 ################# Runge-Kutta ######################    
-    def runge_kutta_4(r_prev, rho_prev, H_prev, H_func, dt, S):
+
+def runge_kutta_4(r_prev, rho_prev, H_prev, H_func, dt, tau, U, S):
         # 1st evaluation
         k1_rho = dt * rho_derivative(H_prev, rho_prev)
         k1_r = dt * ((1 - r_prev) / tau - U * r_prev * S)
@@ -79,11 +70,10 @@ for U in U_values:
         r_new = r_prev + (k1_r + 2 * k2_r + 2 * k3_r + k4_r) / 6
         rho_new = rho_prev + (k1_rho + 2 * k2_rho + 2 * k3_rho + k4_rho) / 6
 
-
         return r_new, rho_new, H_next
 
 #######################  define Hamiltonian #########
-    def H_func(r):
+def H_func(r):
         return np.array([
             [-3, 0, 0, 0, 0, 0, 0, 0],
             [0, -1, 0.05*r, 0, 0, 0, 0, 0],
@@ -93,47 +83,37 @@ for U in U_values:
             [0, 0, 0, 0, 0, 1, 0, 0],
             [0, 0, 0, 0, 0, 0, 1, 0],
             [0, 0, 0, 0, 0, 0, 0, 3]], dtype=float)
-
+    
     
 ################## Iterate over the time range, updating the density matrix and calculating its elements at each step
-    def integrate_equation(r0, tau, U, dt, t_max): # parameters are used to perform a numerical integration using the Runge-Kutta method
-        t = np.arange(0, t_max+dt, dt)
-        r = np.zeros(len(t))
-        rho = np.zeros((len(t), 8, 8), dtype=complex)
-        H = np.zeros((len(t), 8, 8), dtype=complex)
-        r[0] = r0 # Set initial value for r
-        rho[0] = rho0
+def integrate_equation(r0, tau, U, dt, t_max): # parameters are used to perform a numerical integration using the Runge-Kutta method
+        tpoints = np.arange(0, t_max + dt, dt)
+        r = np.zeros(len(tpoints))
+        H = np.zeros((len(tpoints), 8, 8), dtype=complex)
+        rho = np.zeros((len(tpoints), 8, 8), dtype=complex)
+        r[0] = r0
+        rho[0] = np.zeros((8, 8), dtype=float)
+        rho[0][4, 4] = 1  #initialization of rho: excitaion first qubit on rho_44 |100⟩##
         H[0] = H_func(r0)
-  
-       
-        # Create an array to store the x values
-        x_values = np.zeros_like(tpoints)
-        t = np.arange(0, t_max+dt, dt)      
+
+        # define the rhos name
         rho00 = np.zeros_like(tpoints, dtype=complex)
         rho11 = np.zeros_like(tpoints, dtype=float) # Qubit 3
         rho22 = np.zeros_like(tpoints, dtype=float) # Qubit 2
         rho33 = np.zeros_like(tpoints, dtype=float)
         rho44 = np.zeros_like(tpoints, dtype=float) # Qubit 1 |100⟩
         rho55 = np.zeros_like(tpoints, dtype=float)
-        rho55 = np.zeros_like(tpoints, dtype=float)
         rho66 = np.zeros_like(tpoints, dtype=float)
         rho77 = np.zeros_like(tpoints, dtype=float)
 
 
-        for i in range(1, len(t)):
-            # Generate random x between 0 and 1
-            x = random.random()
-            x_values[i] = x 
-            # Set S according to the value of x
-            ##### Measurement #####
-            if x < rho22[i-1]:# change this depending where we measure,  S is set to 1 if x is less than the previous value of rho44[i-1], indicating a condition or threshold is met
-                S = 1
-            elif x > rho22[i-1]:
-                S = 0
+        for i in range(1, len(tpoints)):
+        # Generate random x and set S according to the value of x
+            x = random.random() 
+            S = 1 if x < np.real(rho[i-1, 2, 2]) else 0   #change this depending where we measure here Q2 or Q3 (rho[i-1, 1, 1]) etc,  S is set to 1 if x is less than the previous value of rho22[i-1], indicating a condition or threshold is met
                 
             ##########updates the state of r, rhos, and H to their new values#################
-            r[i], rho[i], H[i]= runge_kutta_4(r[i - 1], rho[i - 1], H[i - 1], H_func, dt, S) ###previous timestep [i−1]
-       
+            r[i], rho[i], H[i] = runge_kutta_4(r[i - 1], rho[i - 1], H[i - 1], H_func, dt, tau, U, S)       
             
             ####Normalize the density matrix#####
             normalization_factor = np.sum(np.real(np.diag(rho[i]))) # Calculate the normalization factor as the sum of the real parts of the diagonal elements of rho[i]
@@ -147,14 +127,16 @@ for U in U_values:
             rho66[i] = np.real(rho[i, 6, 6])
             rho77[i] = np.real(rho[i, 7, 7])
 
-
-        return t, r, rho11, rho22, rho33, rho00, rho44, rho55, rho66, rho77
-    t, r, rho11, rho22, rho33, rho00, rho44, rho55, rho66, rho77= integrate_equation(r0, tau, U, dt, t_max) # The function returns the calculated arrays, which are then assigned to respective variables to hold the entire time series data for r and the probabilities.
+        return tpoints, r, rho11, rho22, rho33, rho00, rho44, rho55, rho66, rho77
     
-    results[U] = (t, r, rho11, rho22, rho33, rho00, rho44, rho55, rho66, rho77) #store the results of the simulation in a dictionary results where the key is U, useful for multiple U values
-
-
-
+#-----------------------------------------------------------------#
+#------------------------Loop-------------------------------------#
+#-----------------------------------------------------------------#
+    
+for U in set(U_values):  # Using set to avoid running the same simulation multiple times
+    tpoints, r, rho11, rho22, rho33, rho00, rho44, rho55, rho66, rho77 = integrate_equation(r0, tau, U, dt, t_max)
+    results[U] = (tpoints, r, rho11, rho22, rho33, rho00, rho44, rho55, rho66, rho77)
+    print(f"Simulation complete for U={U}")
 
 #--------------------------------------------------------------#
 #------------------------Plots---------------------------------#
@@ -169,7 +151,7 @@ fig, ax1 = plt.subplots(figsize=(26, 6))
 plt.plot(tpoints, rho11, color='violet', label='Q3')
 plt.plot(tpoints, rho22, color='orange',label='Q2')
 plt.plot(tpoints, rho44, color='green',label='Q1')
-plt.plot(t, r, label='r', color='blue')
+plt.plot(tpoints, r, label='r', color='blue')
 
 
 ax1.set_xlim([0, max(tpoints)])
@@ -189,26 +171,25 @@ plt.show()
 
 ######example of multiple plot for different U for Q1######
 
-# fig, ax1 = plt.subplots(figsize=(26, 6))
-# for U in results.keys():
-#     time_points, variable_r, rho11, rho22, rho33, rho00, rho44, rho55, rho66, rho77 = results[U]
-#     plt.plot(time_points, rho44, label=f'U-Q1= {U}')
+fig, ax2 = plt.subplots(figsize=(26, 6))
+for U in results.keys():
+    time_points, variable_r, rho11, rho22, rho33, rho00, rho44, rho55, rho66, rho77 = results[U]
+    plt.plot(time_points, rho44, label=f'U-Q1= {U}')
     
-# ax1.set_xlim([0, max(tpoints)])
-# ax1.set_ylim([-0.1, 1.1])
-# ax1.xaxis.label.set_size(40)
-# ax1.yaxis.label.set_size(40)
-# ax1.tick_params(axis='both', which='major', labelsize=40, length=10, width=2)
-# ax1.set_yticks([0, 0.5, 1])
-# ax1.set_yticklabels(['0', '0.5', '1'], fontsize=40)
+ax2.set_xlim([0, max(tpoints)])
+ax2.set_ylim([-0.1, 1.1])
+ax2.xaxis.label.set_size(40)
+ax2.yaxis.label.set_size(40)
+ax2.tick_params(axis='both', which='major', labelsize=40, length=10, width=2)
+ax2.set_yticks([0, 0.5, 1])
+ax2.set_yticklabels(['0', '0.5', '1'], fontsize=40)
 
-# plt.xlabel('Time')
-# plt.ylabel('$P_E$', fontsize=46)
-# plt.legend(loc='upper right', fontsize=30)
-# plt.xlabel(' ', fontsize=46)
-# plt.grid(False)
-# plt.show()
-
+plt.xlabel('Time')
+plt.ylabel('$P_E$', fontsize=46)
+plt.legend(loc='upper right', fontsize=30)
+plt.xlabel(' ', fontsize=46)
+plt.grid(False)
+plt.show()
 
 
 #--------------------------------------------------------------#
