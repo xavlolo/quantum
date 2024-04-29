@@ -142,7 +142,7 @@ for U in set(U_values):  # Using set to avoid running the same simulation multip
 #------------------------Plots---------------------------------#
 #--------------------------------------------------------------#
 
-######simple plot for all qubits for the first U in array######
+######simple plot for all qubits for the first U in array, occupation Prob######
 
 # Create a single figure with specified dimensions
 fig, ax1 = plt.subplots(figsize=(26, 6))
@@ -169,7 +169,7 @@ plt.ylabel('$P_E$', fontsize=46)
 
 plt.show()
 
-######example of multiple plot for different U for Q1######
+######example of multiple plot for different U for Q1 occupation Prob######
 
 fig, ax2 = plt.subplots(figsize=(26, 6))
 for U in results.keys():
