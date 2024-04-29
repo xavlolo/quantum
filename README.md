@@ -8,8 +8,8 @@ In this file no temperature, no entanglement, no facilitation
 Paramaters can be changed
 
 To do do a different measure on qubit update ##### Measurement #####
-if x < rho22[i-1]: #change this depending where we measure rho44 (Qubit 1) or rhoo11 (Qubit 3)
-    S = 1
-elif x > rho22[i-1]:
-    S = 0
+# Generate random x and set S according to the value of x
+            x = random.random() 
+            S = 1 if x < np.real(rho[i-1, 2, 2]) else 0   #change this depending where we measure here Q2 or Q3 (rho[i-1, 1, 1]) etc,  S is set to 1 if x is less than the previous value of rho22[i-1], indicating a condition or threshold is met
+               
 
