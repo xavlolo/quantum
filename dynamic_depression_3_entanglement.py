@@ -1,12 +1,12 @@
 
-# Code for 3 qbits Homogeneous case
+# Code for 3 qubits, homogeneous case
 # Occupation probability
 # Entanglement (single site entanglement and entanglement between qubits 1-3) 
 # Data export single file for each qubit#
-# Time for 2.5 period approx for different taus (0.01=222.43, 10=512.14, 100=3028.99, 500=14163.89)
+# Time for 2.5 period for different taus (0.01=222.43, 10=512.14, 100=3028.99, 500=14163.89)
 
 #-----------------------------------------------------------------#
-#------------------------Imports-------------------------------#
+#------------------------Imports----------------------------------#
 #-----------------------------------------------------------------#
 
 import matplotlib.pyplot as plt
