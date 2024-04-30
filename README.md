@@ -1,9 +1,11 @@
 # Quantum spin chain info
-This is a simplified version of the code for 3 qubits
+Code for 3 qubits, homogeneous case
+# Occupation probability
+# Entanglement (single site entanglement and entanglement between qubits 1-3) 
+# Data export single file for each qubit
+# Time for 2.5 period for different taus (0.01=222.43, 10=512.14, 100=3028.99, 500=14163.89)
 
 with # The computational basis: |000⟩, |001⟩, |010⟩, |011⟩, |100⟩, |101⟩, |110⟩, |111⟩.
-
-In this file no temperature, no entanglement, no facilitation, no entanglement
 
 Paramaters can be changed
 
