@@ -158,7 +158,7 @@ def integrate_equation(r0, tau, U, dt, t_max): # parameters are used to perform 
             ])
             # Compute the eigenvalues of the partial transpose and sum the absolute values of the negative ones
             eigenvalues_1 = np.linalg.eigvals(rho_1)
-            negativity_1 = 0.5 * (sum(abs(eig) for eig in eigenvalues_1) -1)  # equation (12) of the paper for negativity
+            negativity_1 = 0.5 * (sum(abs(eig) for eig in eigenvalues_1) -1)  # equation (12) of the paper for negativity, results checked with Elliot
             negativity_1_list.append(negativity_1)
             
 ##### Compute the partial transpose of the density matrix with respect to system 12|3 #####
