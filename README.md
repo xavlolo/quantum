@@ -17,5 +17,7 @@ Measurement...
 ** Generate random x and set S according to the value of x
                     x = random.random() 
             S = 1 if x < np.real(rho[i-1, 2, 2]) else 0   #change this depending where we measure here Q2 or Q3 (rho[i-1, 1, 1]) etc,  S is set to 1 if x is less than the previous value of rho22[i-1], indicating a condition or threshold is met
+
+# Other code for the full N qubit chain
                
 
